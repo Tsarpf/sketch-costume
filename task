@@ -1,0 +1,23 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var TaskSchema = new Schema({
+    taskname: {
+        type: String
+    },
+
+    description: {
+        type: String
+    }
+    
+});
+
+UserSchema.methods = {
+}
+
+UserSchema.statics = {
+}
+
+
+var Task = mongoose.model('Task', TaskSchema);
+

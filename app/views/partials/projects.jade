@@ -1,0 +1,8 @@
+div(ng-controller="ProjectsController as projectsCtrl")
+
+    ul(class="header") Projects for {{target}}
+
+        li(class="subitem" ng-repeat="project in projects")
+
+            p {{project}}
+

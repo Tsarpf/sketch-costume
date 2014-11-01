@@ -1,0 +1,8 @@
+div(ng-show="loggedIn" ng-controller="NewProjectController as newCtrl")
+    form(name="project", ng-submit="submit()")
+
+        p Project name:
+        input(type="text", ng-model="projectname",  name="projectname") 
+        button(type="submit") Add project
+
+

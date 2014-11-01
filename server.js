@@ -1,7 +1,12 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
+    project_model = require('app/models/project'),
+    ProjectModel = mongoose.model('Project'),
+    user_model = require('app/models/user'),
+    UserModel = mongoose.model('User'),
     app = express();
+
 
 
 var connect = function() {
@@ -42,11 +47,53 @@ app.get('/partials/:name', function(req, res) {
     res.render('partials/' + name);
 });
 
-io.on('connection', function(socket) {
-    socket.emit('hello', {property: 'value'});
 
-    socket.on('msg', function(data) {
-        
+io.on('connection', function(socket) {
+
+    var username = "anon";
+    socket.emit('hello', {testproperty: 'testvalue'});
+
+    socket.on('login', function(data) {
+        username = "jokumuu";
+    });
+    
+
+    socket.on('newProject', function(data) {
+        findUser(username, function (doc) {
+            var project = ProjectModel({
+                projectname: data.projectName,
+                tasks: [],
+                collaborators: [doc]
+            });
+
+
+            project.save(function(err, doc) {
+                if(err){
+                    console.log("error: " + err);
+                    socket.emit('projectCreateFail', {error: err});
+                    return;
+                }
+
+                console.log("new project created");
+                console.log(doc);
+
+                socket.emit('projectCreateSuccess', {id: doc.id});
+            });
+        });
     });
 
+    socket.on('newTask', function(data) {
+        var projectId = data.projectId;
+        //username
+        //stuff
+    });
 });
+
+
+var findUser = function(username, callback) {
+    UserModel.findOne({username: username}).exec(function(err, doc) {
+        console.log("found user:");
+        console.log(doc);
+        callback(doc);
+    });
+}
