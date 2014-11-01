@@ -39,8 +39,16 @@ app.controller("UserHeaderController", ['$scope', 'socket', 'loggedIn', function
 
 
     socket.on('loginFail', function(data) {
-        console.log(data);
+        console.log("login fail: " +  data);
     });
+    /*
+    socket.on('registerFail', function(data) {
+        console.log("register fail: " +  data);
+    });
+    socket.on('registerSuccess', function(data) {
+        console.log("register success: " +  data);
+    });
+    */
 }]);
 
 app.directive('scNewProject', function() {

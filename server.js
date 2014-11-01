@@ -49,6 +49,7 @@ app.get('/partials/:name', function(req, res) {
 
 
 io.on('connection', function(socket) {
+    console.log("got new connection!");
 
     var username = "anon";
     socket.emit('hello', {testproperty: 'testvalue'});
@@ -91,6 +92,10 @@ io.on('connection', function(socket) {
     
 
     socket.on('newProject', function(data) {
+        if(username == 'anon') {
+            socket.emit('projectCreateFail', {error: 'Not logged in!'});
+        }
+
         findUser(username, function (doc) {
             var project = ProjectModel({
                 projectname: data.projectName,
