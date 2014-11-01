@@ -74,7 +74,10 @@ app.controller("ProjectController", ['$rootScope', '$scope', 'socket', function(
         socket.emit('newTask', {projectId: $scope.projectId, taskName: $scope.taskName});
     };
     $scope.projectData = {};
-    socket.on("projectData" + projectId, function(data) {
+    socket.on("projectData" + $scope.projectId, function(data) {
+            $scope.projectData = data; 
+    });
+    socket.on("projectData", function(data) {
             $scope.projectData = data; 
     });
     socket.emit("getProject", {id: $scope.projectId});
@@ -83,7 +86,7 @@ app.controller("ProjectController", ['$rootScope', '$scope', 'socket', function(
 app.directive("scProject", function() {
     return {
         restrict: "E",
-        templateUrl: '/partials/newproject',
+        templateUrl: '/partials/project',
         link: function(scope, element, attrs) {
             console.log(attrs.projectId);
             scope.projectId = attrs.projectId;

@@ -106,6 +106,7 @@ io.on('connection', function(socket) {
         task.save(function(err, doc) {
             if(!err){
                 getProjectData(data.projectId, function(doc) {
+                    console.log(doc);
                     io.sockets.emit('projectData' + data.projectId, doc);
                 });
             }
@@ -126,7 +127,9 @@ io.on('connection', function(socket) {
     });
 
     socket.on('getProject', function(data) {
+        console.log(data);
         getProjectData(data.id, function(doc) {
+            console.log(doc);
             socket.emit('projectData', doc);
         });
     });
