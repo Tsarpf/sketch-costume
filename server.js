@@ -47,7 +47,17 @@ app.get('/partials/:name', function(req, res) {
     res.render('partials/' + name);
 });
 
+app.get('/project/:id', function(req, res) {
+    var id = req.params.id;
 
+    ProjectModel.findOneById(id, function(err, doc) {
+        res.render('project', {project: doc});
+    });
+});
+
+
+/*
+//TODO: good client handling (ie: remove users when they disconnect)
 var clients = [];
 var broadcast = function(channel, obj) {
     for(var i = 0; i < clients.length; i++)
@@ -56,10 +66,12 @@ var broadcast = function(channel, obj) {
         clients.emit(channel, obj);
         }
         catch(err){
+
             console.log(err);
         }
     }
 }
+*/
 io.on('connection', function(socket) {
     console.log("got new connection!");
 
