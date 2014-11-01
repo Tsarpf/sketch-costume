@@ -1,0 +1,16 @@
+{
+  "name": "sketch-costume",
+  "description": "Pair programming thingy",
+  "dependencies": {
+    "express": "*",
+    "mongoose": "*",
+    "body-parser": "*",
+    "jade": "*",
+    "socket.io": "*"
+  },
+
+  "scripts": {
+    "start": "node server.js"
+  }
+
+}
