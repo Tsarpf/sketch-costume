@@ -6,12 +6,12 @@ var TaskSchema = new Schema({
         type: String
     },
 
-    description: {
-        type: String
+    taskstatus: {
+       type: String 
     },
 
-    taskstatus: {
-       type: Number 
+    projectid: {
+        type: String
     }
     
 });

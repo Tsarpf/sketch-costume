@@ -2,12 +2,16 @@ extends layout
 
 block content
 
-    div
+    div(ng-controller="ProjectsController as projectsCtrl")
+
         h1 Test headre thingy sda fghjölj
 
         sc-projects
 
         sc-new-project
+
+        sc-project(project-id="{{proj.id}}" ng-repeat="proj in viewing")
+
 
 
        

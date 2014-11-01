@@ -5,6 +5,8 @@ var express = require('express'),
     ProjectModel = mongoose.model('Project'),
     user_model = require('./app/models/user.js'),
     UserModel = mongoose.model('User'),
+    task_model = require('./app/models/task.js'),
+    TaskModel = mongoose.model('Task'),
     app = express();
 
 
@@ -97,6 +99,19 @@ io.on('connection', function(socket) {
         });
     });
 
+    socket.on('newTask', function(data) {
+        var task = TaskModel({taskname: data.taskName, taskstatus: "not_started", projectid: data.projectId
+        });        
+
+        task.save(function(err, doc) {
+            if(!err){
+                getProjectData(data.projectId, function(doc) {
+                    io.sockets.emit('projectData' + data.projectId, doc);
+                });
+            }
+        });
+    });
+
     socket.on('getAllProjects', function(data) {
         ProjectModel.find({}, function(err, docs) {
             var documents = [];
@@ -107,6 +122,12 @@ io.on('connection', function(socket) {
                 });
             }
             socket.emit('allProjects', {projects: documents});
+        });
+    });
+
+    socket.on('getProject', function(data) {
+        getProjectData(data.id, function(doc) {
+            socket.emit('projectData', doc);
         });
     });
     
@@ -139,13 +160,13 @@ io.on('connection', function(socket) {
         });
     });
 
-    socket.on('newTask', function(data) {
-        var projectId = data.projectId;
-        //username
-        //stuff
-    });
 });
 
+var getProjectData = function(id, callback) {
+    ProjectModel.findOne({_id: id}).exec(function(err, doc){
+        callback(doc);
+    });
+};
 
 var findUser = function(username, callback) {
     UserModel.findOne({username: username}).exec(function(err, doc) {

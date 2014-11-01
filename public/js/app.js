@@ -5,10 +5,20 @@ var username = "anon";
 app.value('username', 'anon');
 
 app.controller("ProjectsController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
+    $scope.viewing = [];
     socket.on('allProjects', function(data) {
         console.log(data.projects);
         $scope.projects = data.projects;
     });
+    var showing = {};
+    $scope.show=function(id){
+        for(var i = 0; i < $scope.projects.length; i++){
+            if(!showing.hasOwnProperty(id) && $scope.projects[i].id === id){
+                $scope.viewing.push($scope.projects[i]);
+                showing[id] = "ses";
+            }
+        }
+    };
     socket.emit('getAllProjects', {value:"value"});
     $scope.target = "everyone";
     //console.log("ses " + global.loggedIn);
@@ -27,6 +37,7 @@ app.controller("NewProjectController", ['$rootScope', '$scope', 'socket', functi
         socket.emit('getAllProjects', {});
     };
 }]);
+
 
 
 app.controller("UserHeaderController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
@@ -58,13 +69,15 @@ app.controller("UserHeaderController", ['$rootScope', '$scope', 'socket', functi
 }]);
 
 app.controller("ProjectController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
+    $scope.taskName = "";
+    $scope.submit = function() {
+        socket.emit('newTask', {projectId: $scope.projectId, taskName: $scope.taskName});
+    };
     $scope.projectData = {};
-    socket.on("projectData", function(data) {
-        if(data.id == projectId){
+    socket.on("projectData" + projectId, function(data) {
             $scope.projectData = data; 
-        }
     });
-    socket.emit("getProject" {id: $scope.projectId});
+    socket.emit("getProject", {id: $scope.projectId});
 }]);
 
 app.directive("scProject", function() {
@@ -72,6 +85,7 @@ app.directive("scProject", function() {
         restrict: "E",
         templateUrl: '/partials/newproject',
         link: function(scope, element, attrs) {
+            console.log(attrs.projectId);
             scope.projectId = attrs.projectId;
          }
     }
