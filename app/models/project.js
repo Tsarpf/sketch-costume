@@ -9,7 +9,7 @@ var ProjectSchema = new Schema({
     tasks: [{
         type: mongoose.Schema.Types.ObjectId,
          ref: 'Task'
-    }]
+    }],
 
     collaborators: [{
         type: mongoose.Schema.Types.ObjectId,

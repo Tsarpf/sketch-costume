@@ -6,7 +6,7 @@ var UserSchema = new Schema({
         type: String
     },
 
-    password {
+    password: {
         type: String
     },
 

@@ -1,9 +1,9 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    project_model = require('app/models/project'),
+    project_model = require('./app/models/project.js'),
     ProjectModel = mongoose.model('Project'),
-    user_model = require('app/models/user'),
+    user_model = require('./app/models/user.js'),
     UserModel = mongoose.model('User'),
     app = express();
 
@@ -54,7 +54,39 @@ io.on('connection', function(socket) {
     socket.emit('hello', {testproperty: 'testvalue'});
 
     socket.on('login', function(data) {
-        username = "jokumuu";
+        console.log(data);
+        findUser(data.username, function(doc) {
+            if(doc.password === data.password){
+               socket.emit("loginSuccess", {}); 
+               username = data.username;
+            }
+            else {
+                socket.emit("loginFail", "No such user/password combo found");
+            }
+        });
+    });
+
+    socket.on('register', function(data) {
+        findUser(data.username, function(doc) {
+            if(!doc) { //If document doesn't already exist with given name then create new user
+                var user = UserModel({
+                    username: data.username,
+                    password: data.password,
+                    projects: []
+                });
+                
+                user.save(function(err, doc) {
+                    console.log("new user creation");
+                    console.log(err);
+                    console.log(doc);
+                });
+
+                socket.emit('registerSuccess', {});
+            }
+            else { //Username already taken
+                socket.emit('registerFail', "username already taken");
+            }
+        });
     });
     
 

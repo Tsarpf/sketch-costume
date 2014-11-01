@@ -3,6 +3,8 @@ var app = angular.module('TaskManager', []);
 var username = "anon";
 
 app.value('loggedIn', true);
+app.value('username', 'anon');
+
 app.controller("ProjectsController", ['$scope', 'socket', 'loggedIn', function($scope, socket, loggedIn) {
     $scope.target = "everyone";
     console.log("ses" + loggedIn);
@@ -20,7 +22,26 @@ app.controller("NewProjectController", ['$scope', 'socket', 'loggedIn', function
 
 app.controller("UserHeaderController", ['$scope', 'socket', 'loggedIn', function($scope, socket, loggedIn) {
     $scope.loggedIn = loggedIn;
-}]).;
+    $scope.username = "";
+    $scope.password = "";
+    $scope.logIn = function() {
+        var obj = {};
+        obj.username = $scope.username;
+        obj.password = $scope.password;
+
+        socket.emit('login', obj);
+    }
+
+    socket.on('loginSuccess', function(data) {
+        console.log(data);
+        $scope.loggedIn = true;
+    });
+
+
+    socket.on('loginFail', function(data) {
+        console.log(data);
+    });
+}]);
 
 app.directive('scNewProject', function() {
     return {
@@ -33,23 +54,21 @@ app.directive('scNewProject', function() {
     };
 });
 
-
 app.directive('scProjects', function() {
     return {
         restrict: "E",
         templateUrl: '/partials/projects',
         link: function(scope, element, attrs) {
-            scope.roomName='room' + attrs.roomName;
+            //scope.roomName='room' + attrs.roomName;
         }
     };
 });
 
-app.directive('scUserheader', function() {
+app.directive('scUserHeader', function() {
     return {
         restrict: "E",
         templateUrl: '/partials/userheader',
         link: function(scope, element, attrs) {
-            scope.roomName='room' + attrs.roomName;
         }
     };
 });
