@@ -1,7 +1,7 @@
 div(ng-controller="ProjectsController as projectsCtrl")
 
     ul(class="header") Projects for {{target}}
-
         li(class="subitem" ng-repeat="project in projects")
 
-         a(href="/projects/#{project.id}") #{project.projectname}
+            p jebin {{project.id}} moi
+            a(href="/project/{{project.id}}") {{project.projectname}}

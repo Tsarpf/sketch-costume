@@ -5,9 +5,13 @@ var username = "anon";
 app.value('username', 'anon');
 
 app.controller("ProjectsController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
+    socket.on('allProjects', function(data) {
+        console.log(data.projects);
+        $scope.projects = data.projects;
+    });
+    socket.emit('getAllProjects', {value:"value"});
     $scope.target = "everyone";
     //console.log("ses " + global.loggedIn);
-    $scope.projects = ['test', 'ses'];
 }]);
 
 app.controller("NewProjectController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {

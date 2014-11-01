@@ -50,28 +50,11 @@ app.get('/partials/:name', function(req, res) {
 app.get('/project/:id', function(req, res) {
     var id = req.params.id;
 
-    ProjectModel.findOneById(id, function(err, doc) {
+    ProjectModel.find({_id: id}, function(err, doc) {
         res.render('project', {project: doc});
     });
 });
 
-
-/*
-//TODO: good client handling (ie: remove users when they disconnect)
-var clients = [];
-var broadcast = function(channel, obj) {
-    for(var i = 0; i < clients.length; i++)
-    {
-        try {
-        clients.emit(channel, obj);
-        }
-        catch(err){
-
-            console.log(err);
-        }
-    }
-}
-*/
 io.on('connection', function(socket) {
     console.log("got new connection!");
 
@@ -113,6 +96,19 @@ io.on('connection', function(socket) {
             }
         });
     });
+
+    socket.on('getAllProjects', function(data) {
+        ProjectModel.find({}, function(err, docs) {
+            var documents = [];
+            for(var i = 0; i < docs.length; i++){
+                documents.push({
+                    id: String(docs[i]._id),
+                    projectname: docs[i].projectname
+                });
+            }
+            socket.emit('allProjects', {projects: documents});
+        });
+    });
     
 
     socket.on('newProject', function(data) {
@@ -139,7 +135,6 @@ io.on('connection', function(socket) {
                 console.log(doc);
 
                 socket.emit('projectCreateSuccess', {id: doc.id});
-                broadcast('
             });
         });
     });
