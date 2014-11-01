@@ -48,6 +48,18 @@ app.get('/partials/:name', function(req, res) {
 });
 
 
+var clients = [];
+var broadcast = function(channel, obj) {
+    for(var i = 0; i < clients.length; i++)
+    {
+        try {
+        clients.emit(channel, obj);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+}
 io.on('connection', function(socket) {
     console.log("got new connection!");
 
@@ -115,6 +127,7 @@ io.on('connection', function(socket) {
                 console.log(doc);
 
                 socket.emit('projectCreateSuccess', {id: doc.id});
+                broadcast('
             });
         });
     });

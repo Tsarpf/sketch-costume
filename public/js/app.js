@@ -2,53 +2,54 @@ var app = angular.module('TaskManager', []);
 
 var username = "anon";
 
-app.value('loggedIn', true);
 app.value('username', 'anon');
 
-app.controller("ProjectsController", ['$scope', 'socket', 'loggedIn', function($scope, socket, loggedIn) {
+app.controller("ProjectsController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
     $scope.target = "everyone";
-    console.log("ses" + loggedIn);
+    //console.log("ses " + global.loggedIn);
     $scope.projects = ['test', 'ses'];
-}]).value;
+}]);
 
-app.controller("NewProjectController", ['$scope', 'socket', 'loggedIn', function($scope, socket, loggedIn) {
+app.controller("NewProjectController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
     $scope.projectName = "";
-    $scope.loggedIn = loggedIn;
+
+    socket.on('projectCreateSuccess', function(data) {
+       console.log('succesful project creation: ' + data); 
+    });
     $scope.submit = function() {
-        //submit something
-        //socket.emit etc
+        var obj = {projectName: $scope.projectName};
+        socket.emit('newProject', obj);
+        $scope.projectName = "";
     };
 }]);
 
-app.controller("UserHeaderController", ['$scope', 'socket', 'loggedIn', function($scope, socket, loggedIn) {
-    $scope.loggedIn = loggedIn;
-    $scope.username = "";
-    $scope.password = "";
+
+app.controller("UserHeaderController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
+    $rootScope.global = {loggedIn: false, username: 'anon'};
+    //console.log("ses " + global.loggedIn);
     $scope.logIn = function() {
         var obj = {};
         obj.username = $scope.username;
         obj.password = $scope.password;
 
+        $rootScope.global.username = $scope.username;
         socket.emit('login', obj);
     }
+    $scope.logout = function() {
+        $rootScope.global.loggedIn = false;
+        $rootScope.global.username = "anon";
+    };
 
     socket.on('loginSuccess', function(data) {
         console.log(data);
-        $scope.loggedIn = true;
+        $rootScope.global.loggedIn = true;
     });
 
 
     socket.on('loginFail', function(data) {
         console.log("login fail: " +  data);
+        $rootScope.global.username = "anon";
     });
-    /*
-    socket.on('registerFail', function(data) {
-        console.log("register fail: " +  data);
-    });
-    socket.on('registerSuccess', function(data) {
-        console.log("register success: " +  data);
-    });
-    */
 }]);
 
 app.directive('scNewProject', function() {

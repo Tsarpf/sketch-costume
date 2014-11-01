@@ -11,3 +11,7 @@ h1 {
     font-size: 75%;
     font-weight: normal;
 }
+
+.loginfield {
+    display: inline;
+}

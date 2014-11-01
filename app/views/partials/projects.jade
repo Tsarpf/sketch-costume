@@ -4,5 +4,4 @@ div(ng-controller="ProjectsController as projectsCtrl")
 
         li(class="subitem" ng-repeat="project in projects")
 
-            p {{project}}
-
+         a(href="/projects/#{project.id}") #{project.projectname}
