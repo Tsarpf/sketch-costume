@@ -8,16 +8,19 @@ var TaskSchema = new Schema({
 
     description: {
         type: String
+    },
+
+    taskstatus: {
+       type: Number 
     }
     
 });
 
-UserSchema.methods = {
+TaskSchema.methods = {
 }
 
-UserSchema.statics = {
+TaskSchema.statics = {
 }
 
 
 var Task = mongoose.model('Task', TaskSchema);
-

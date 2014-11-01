@@ -24,6 +24,7 @@ app.controller("NewProjectController", ['$rootScope', '$scope', 'socket', functi
         var obj = {projectName: $scope.projectName};
         socket.emit('newProject', obj);
         $scope.projectName = "";
+        socket.emit('getAllProjects', {});
     };
 }]);
 
@@ -56,6 +57,26 @@ app.controller("UserHeaderController", ['$rootScope', '$scope', 'socket', functi
     });
 }]);
 
+app.controller("ProjectController", ['$rootScope', '$scope', 'socket', function($rootScope, $scope, socket) {
+    $scope.projectData = {};
+    socket.on("projectData", function(data) {
+        if(data.id == projectId){
+            $scope.projectData = data; 
+        }
+    });
+    socket.emit("getProject" {id: $scope.projectId});
+}]);
+
+app.directive("scProject", function() {
+    return {
+        restrict: "E",
+        templateUrl: '/partials/newproject',
+        link: function(scope, element, attrs) {
+            scope.projectId = attrs.projectId;
+         }
+    }
+})
+
 app.directive('scNewProject', function() {
     return {
         restrict: "E",
@@ -66,6 +87,18 @@ app.directive('scNewProject', function() {
 
     };
 });
+
+/*
+app.directive('', function() {
+    return {
+        restrict: "E",
+        templateUrl: '/partials/projects',
+        link: function(scope, element, attrs) {
+            //scope.roomName='room' + attrs.roomName;
+        }
+    };
+});
+*/
 
 app.directive('scProjects', function() {
     return {

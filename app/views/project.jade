@@ -1,5 +1,7 @@
-div
-    p moi #{project.projectname}
-    p #{project.id}
+div(ng-controller="ProjectController as projectCtrl")
+    h3 {{projectData.projectname}}
+    ul Tasks
+        li(ng-repeat="task in projectData.tasks")
+            p(class="{{task.status}}") {{task.name}}
 
 
