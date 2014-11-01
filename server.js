@@ -6,7 +6,7 @@ var express = require('express'),
 
 var connect = function() {
     var options = {server: {socketOptions: {keepAlive: 1}}};
-    mongoose.connecet("mongodb://localhost/", options);
+    mongoose.connect("mongodb://localhost/", options);
 };
 
 connect();
@@ -43,7 +43,7 @@ app.get('/partials/:name', function(req, res) {
 });
 
 io.on('connection', function(socket) {
-    socket.emit('hello', {property: 'value'\);
+    socket.emit('hello', {property: 'value'});
 
     socket.on('msg', function(data) {
         
